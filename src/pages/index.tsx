@@ -1,115 +1,129 @@
-import Image from "next/image";
-import localFont from "next/font/local";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+/* import { useMutation, useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useRouter } from 'next/router'
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    const router = useRouter()
+    const me = useQuery({
+        queryKey: ['me'],
+        queryFn: async () => await axios.get('/api/me'),
+    })
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    const logoutMutation = useMutation({
+        mutationFn: async () => await axios.post('/api/logout'),
+        onSuccess: () => {
+            me.refetch()
+            window.location.reload()
+        },
+        onError: (error) => {
+            console.error('Logout error:', error)
+        },
+    })
+
+    const logout = () => logoutMutation.mutate()
+    return (
+        <div className='flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>
+            <div className='bg-white p-8 rounded-xl shadow-md max-w-md w-full'>
+                <p className='text-center text-2xl font-semibold mb-6 text-gray-800'>
+                    Welcome Back!
+                </p>
+                {me.data?.data ? (
+                    <div>
+                        <p className='text-center text-lg mb-4 text-gray-600'>
+                            Logged in as:{' '}
+                            <strong>{me.data?.data.nickname}</strong>
+                        </p>
+                        <div className='mt-4'>
+                            <button
+                                onClick={logout}
+                                className='w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-md shadow hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+                            >
+                                Log Out
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className='space-y-4'>
+                            <button
+                                onClick={() => router.push('/signUp')}
+                                className='w-full bg-green-600 text-white p-2'
+                            >
+                                Sign Up
+                            </button>
+                            <button
+                                onClick={() => router.push('/login')}
+                                className='w-full bg-indigo-600 text-white p-2'
+                            >
+                                Log In
+                            </button>
+                            <button
+                                onClick={() => router.push('/forgotPassword')}
+                                className='w-full bg-pink-600 text-white p-2'
+                            >
+                                Reset Password
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    )
+}
+ */
+
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+
+export default function Home() {
+    const router = useRouter()
+
+    const me = useQuery({
+        queryKey: ['me'],
+        queryFn: async () => {
+            const response = await axios.get('/api/me')
+            return response.data
+        },
+    })
+
+    // 로그인된 사용자의 경우 자동으로 Todo 페이지로 리디렉션
+    if (me.isLoading) {
+        return <p>Loading...</p>
+    }
+
+    if (me.data) {
+        router.push('/todos') // Todo 페이지로 리디렉션
+        return null // 리디렉션 중 다른 내용을 반환하지 않습니다.
+    }
+
+    return (
+        <div className='flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>
+            <div className='bg-white p-8 rounded-xl shadow-md max-w-md w-full'>
+                <p className='text-center text-2xl font-semibold mb-6 text-gray-800'>
+                    Welcome Back!
+                </p>
+                <div className='space-y-4'>
+                    <button
+                        onClick={() => router.push('/signUp')}
+                        className='w-full bg-green-600 text-white p-2'
+                    >
+                        Sign Up
+                    </button>
+                    <button
+                        onClick={() => router.push('/login')}
+                        className='w-full bg-indigo-600 text-white p-2'
+                    >
+                        Log In
+                    </button>
+                    <button
+                        onClick={() => router.push('/forgotPassword')}
+                        className='w-full bg-pink-600 text-white p-2'
+                    >
+                        Reset Password
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
 }

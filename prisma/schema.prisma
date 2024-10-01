@@ -12,3 +12,44 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  idx       Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  nickname  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  todos Todo[]
+}
+
+model Todo {
+  idx       Int      @id @default(autoincrement())
+  title     String
+  content   String
+  isDone    Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      User     @relation(fields: [userIdx], references: [idx])
+  userIdx   Int
+  tasks     Task[]
+}
+
+model Task {
+  idx       Int      @id @default(autoincrement())
+  title     String
+  content   String
+  status    Status
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  todo      Todo     @relation(fields: [todoIdx], references: [idx])
+  todoIdx   Int
+}
+
+enum Status {
+  Todo
+  InProgress
+  Done
+  Pending
+}
